@@ -4,7 +4,7 @@
     "label": "PhD student",
     "image": "",
     "email": "shangqing.tong@sjtu.edu.cn",
-    "phone": "18800318979",
+    "phone": "11122223333",
     "url": "https://noeltong.github.io",
     "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
     "location": {
@@ -24,13 +24,13 @@
   },
   "work": [
     {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
-      "highlights": ["Relativity"]
+      "name": "Central Research Institute, United Imaging Healthcare",
+      "position": "Software Engineer",
+      "url": "https://global.united-imaging.com/en/",
+      "startDate": "2023-10-19",
+      "endDate": "2024-07-05",
+      "summary": "During my internship at Central Research Institute of United Imaging, my work mainly focused on the quantitative analysis algorithms of parametric imaging of dynamic positron emission tomography (dPET) imaging with patient data from uEXPLORER, a total body PET/CT scanner, under the supervision of Prof.~Yun Zhou.",
+      "highlights": ["Dual-tracer time-activity curve separation with machine learning algorithms.", "Accelerating irreversible 2-tissue compartment model with CUDA and PyTorch.", "Development of automatic PET/CT parametric imaging and time-activity curve calculation (including regions of interest of brain and tissues of total body) pipeline with CT segmentation."]
     }
   ],
   "volunteer": [
@@ -67,6 +67,17 @@
         "endDate": "2024-07-01",
         "score": "10",
         "courses": ["Machine Learning", "Matrix Calculation", "Digital Image Processing"]
+    },
+    {
+        "institution": "Jiangnan University",
+        "location": "Wuxi, Jiangsu, China",
+        "url": "https://www.jiangnan.edu.cn/",
+        "area": "Communication Engineering",
+        "studyType": "BS",
+        "startDate": "2017-09-01",
+        "endDate": "2021-07-01",
+        "score": "10",
+        "courses": ["Signals and Systems", "Digital Signal Processing", "Calculus"]
     }
   ],
   "awards": [
