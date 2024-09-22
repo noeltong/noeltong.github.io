@@ -1,18 +1,18 @@
 {
   "basics": {
-    "name": "Albert Einstein",
-    "label": "Scientist",
+    "name": "Shangqing Tong",
+    "label": "PhD student",
     "image": "",
-    "email": "albert@einstein.de",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
+    "email": "shangqing.tong@sjtu.edu.cn",
+    "phone": "18800318979",
+    "url": "https://noeltong.github.io",
     "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
     "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
-      "countryCode": "US",
-      "region": "California"
+      "address": "800 Dongchuan Rd.",
+      "postalCode": "200240",
+      "city": "Shanghai",
+      "countryCode": "China",
+      "region": "Minhang Dist."
     },
     "profiles": [
       {
@@ -47,15 +47,26 @@
   ],
   "education": [
     {
-      "institution": "University of Zurich, Zurich, Switzerland",
-      "location": "Zurich, Switzerland",
-      "url": "https://www.uzh.ch/",
-      "area": "Software Development",
+      "institution": "Shanghai Jiao Tong University",
+      "location": "Shanghai, China",
+      "url": "https://en.sjtu.edu.cn/",
+      "area": "Electrical Engineering",
       "studyType": "PhD",
-      "startDate": "1905-01-01",
-      "endDate": "1905-01-01",
+      "startDate": "2024-09-01",
+      "endDate": "2028-07-01",
       "score": "10",
-      "courses": ["Theory of Relativity"]
+      "courses": ["Optics and Photonics"]
+    },
+    {
+        "institution": "ShanghaiTech University",
+        "location": "Shanghai, China",
+        "url": "https://www.shanghaitech.edu.cn/eng/",
+        "area": "Electrical Engineering",
+        "studyType": "MSE",
+        "startDate": "2021-09-01",
+        "endDate": "2024-07-01",
+        "score": "10",
+        "courses": ["Machine Learning", "Matrix Calculation", "Digital Image Processing"]
     }
   ],
   "awards": [
