@@ -8,7 +8,6 @@ middle_name:
 last_name: Tong
 email: shangqing.tong@sjtu.edu.cn
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  I'm Shangqing Tong, now a PhD student of University of Michigan-Shanghai Jiao Tong University Joint Institute. My advisor is <a href="https://umji.sjtu.edu.cn/~slchen/Members.htm">Prof. Sung-liang Chen</a>. I obtained my master's degree in <a href="http://www.hislab.cn/">Hybrid Imaging System Laboratory</a>, School of Information Science and Technology, ShanghaiTech University under the supervision of Prof. Fei Gao. Before that, I completed my bachelor's study in Jiangnan University, majoring in Communication Engineering.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
@@ -313,8 +312,8 @@ display_categories: ["external-services"] # these categories will be displayed o
 # -----------------------------------------------------------------------------
 
 scholar:
-  last_name: [Einstein]
-  first_name: [Albert, A.]
+  last_name: [Tong]
+  first_name: [Shangqing]
 
   style: apa
   locale: en
