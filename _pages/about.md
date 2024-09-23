@@ -5,7 +5,7 @@ permalink: /
 subtitle: <a href='https://www.ji.sjtu.edu.cn/'>UM-SJTU JI</a>. Shanghai Jiao Tong University
 profile:
   align: right
-  image: prof_pic.png
+  image: prof_pic.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
     <p>Longbin Building</p>
