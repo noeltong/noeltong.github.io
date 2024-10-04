@@ -17,4 +17,4 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-I'm Shangqing Tong, now a PhD candidate of University of Michigan-Shanghai Jiao Tong University Joint Institute. My advisor is [Prof. Sung-Liang Chen](https://umji.sjtu.edu.cn/~slchen/Members.htm). I obtained my master's degree in [Hybrid Imaging System Laboratory](http://www.hislab.cn/), School of Information Science and Technology, ShanghaiTech University under the supervision of Prof. Fei Gao. Before that, I completed my bachelor's study in Jiangnan University, majoring in Communication Engineering.
+I'm Shangqing Tong, now a PhD student of University of Michigan-Shanghai Jiao Tong University Joint Institute. My advisor is [Prof. Sung-Liang Chen](https://umji.sjtu.edu.cn/~slchen/Members.htm). I obtained my master's degree in [Hybrid Imaging System Laboratory](http://www.hislab.cn/), School of Information Science and Technology, ShanghaiTech University under the supervision of Prof. Fei Gao. Before that, I completed my bachelor's study in Jiangnan University, majoring in Communication Engineering.
