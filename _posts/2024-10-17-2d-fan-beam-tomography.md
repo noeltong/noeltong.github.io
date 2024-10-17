@@ -3,8 +3,8 @@ layout: post
 title: "2D Fan-Beam Tomography"
 date: 2024-10-17 16:36:16
 description: Notes on backprojection algorithm of fan-beam CT
-tag: tomographic
-categories: image-processing tomographic
+tags: image-processing tomographic
+categories: lecture-notes
 toc:
   sidebar: left
 ---
