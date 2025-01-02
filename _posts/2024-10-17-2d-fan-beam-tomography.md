@@ -3,21 +3,21 @@ layout: post
 title: "2D Fan-Beam Tomography"
 date: 2024-10-17 16:36:16
 description: Notes on backprojection algorithm of fan-beam CT
-tags: image-processing tomographic
+tags: inverse
 categories: lecture-notes
 giscus_comments: true
 toc:
   sidebar: left
 ---
 
-# Fan-parallel rebinning methods 
+## Fan-parallel rebinning methods 
 
 to be finished..
 
-# The filter-backproject (FBP) approach for tomographic scan
+## The filter-backproject (FBP) approach for tomographic scan
 
 The fan-beam FBP method uses the following three steps.
-1.  Compute *weighted* projections for each $\beta$.
+1. Compute *weighted* projections for each $\beta$.
 \begin{equation}
 \tilde{p} (s, \beta) \triangleq p(s, \beta) \frac{w_{2\pi} (s, \beta) J(s)}{W_1 ^2 (s)}.
 \end{equation}
