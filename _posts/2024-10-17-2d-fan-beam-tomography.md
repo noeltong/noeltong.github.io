@@ -5,6 +5,7 @@ date: 2024-10-17 16:36:16
 description: Notes on backprojection algorithm of fan-beam CT
 tags: image-processing tomographic
 categories: lecture-notes
+giscus_comments: true
 toc:
   sidebar: left
 ---
