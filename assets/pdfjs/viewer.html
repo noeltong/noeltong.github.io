@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+                 script-src 'self' 'wasm-unsafe-eval';
+                 style-src 'self' 'unsafe-inline';
+                 img-src 'self' data: blob:;
+                 font-src 'self' data: blob:;
+                 connect-src 'self' https://filmarchive-docs.example;
+                 worker-src 'self' blob:;
+                 child-src 'self' blob:;
+                 object-src 'none';
+                 base-uri 'none';
+                 form-action 'none';">
+  <title>胶片档案 PDF 查看器</title>
+  <link rel="stylesheet" href="./pdf_viewer.css">
+  <link rel="stylesheet" href="./viewer.css">
+</head>
+<body>
+  <div id="viewerContainer">
+    <div id="viewer" class="pdfViewer"></div>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <div class="overlay-card">
+      <div class="overlay-icon" id="overlayIcon">◫</div>
+      <div class="overlay-title" id="overlayTitle">请选择一份文档</div>
+      <div class="overlay-detail" id="overlayDetail">从左侧索引中选择胶卷或文档开始浏览。</div>
+      <div class="progress hidden" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+      <button id="retryButton" class="hidden" type="button">重新加载</button>
+    </div>
+  </div>
+
+  <script type="module" src="./viewer.js"></script>
+</body>
+</html>
