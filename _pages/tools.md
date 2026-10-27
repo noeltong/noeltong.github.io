@@ -7,8 +7,8 @@ nav: true
 nav_order: 5
 ---
 
-<div class="row row-cols-1 row-cols-md-3">
-  <div class="col">
+<div class="row">
+  <div class="col-12 col-md-6 mb-4">
     <a href="{{ '/filmarchive/' | relative_url }}">
       <div class="card h-100 hoverable">
         <div class="card-body">
@@ -20,7 +20,7 @@ nav_order: 5
       </div>
     </a>
   </div>
-  <div class="col">
+  <div class="col-12 col-md-6 mb-4">
     <a href="{{ '/tools/reciprocity/' | relative_url }}">
       <div class="card h-100 hoverable">
         <div class="card-body">

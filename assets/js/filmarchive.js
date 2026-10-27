@@ -53,7 +53,10 @@ const l10n = {
     return "ltr";
   },
   async get(key) {
-    return typeof key === "string" ? key : key?.default ?? key?.message ?? "";
+    if (typeof key === "string") return key;
+    const entry = key || {};
+    if (entry.default != null) return entry.default;
+    return entry.message != null ? entry.message : "";
   },
   async translate(element) {
     return element;
