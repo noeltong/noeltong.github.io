@@ -4,7 +4,7 @@ title: tools
 permalink: /tools/
 description: A collection of small tools and reference resources.
 nav: true
-nav_order: 3
+nav_order: 5
 ---
 
 <div class="row row-cols-1 row-cols-md-3">
