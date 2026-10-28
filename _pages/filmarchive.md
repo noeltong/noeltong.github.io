@@ -58,16 +58,19 @@ _styles: |
     border-radius: 999px;
     padding: 0.05rem 0.5rem;
   }
-  .fa-dot {
-    flex: none;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 999px;
-    background: var(--fa-dot, var(--global-theme-color));
-  }
   .fa-cat .fa-summary {
     font-weight: 400;
     font-size: 0.92rem;
+  }
+  .fa-group-summary {
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--global-text-color-light);
+  }
+  .fa-group > .fa-body {
+    padding: 0.15rem 0.1rem 0.4rem;
   }
   .fa-body {
     padding: 0 0.25rem 0.4rem 1rem;
@@ -77,6 +80,11 @@ _styles: |
     font-weight: 600;
     color: var(--global-text-color-light);
     margin: 0.5rem 0 0.15rem;
+  }
+  .fa-product-doc {
+    margin-top: 0.35rem;
+    font-weight: 600;
+    font-size: 0.92rem;
   }
   .fa-docs {
     list-style: none;
@@ -261,6 +269,8 @@ _styles: |
 ---
 
 <link rel="stylesheet" href="{{ '/assets/pdfjs/pdf_viewer.css' | relative_url }}" />
+<link rel="modulepreload" href="{{ '/assets/pdfjs/build/pdf.mjs' | relative_url }}" />
+<link rel="modulepreload" href="{{ '/assets/pdfjs/web/pdf_viewer.mjs' | relative_url }}" />
 
 <div
   id="film-archive"
@@ -290,7 +300,10 @@ _styles: |
         </div>
         <div class="fa-placeholder" id="fa-placeholder">Select a document from the index to open it in the reader.</div>
         <div class="fa-placeholder" id="fa-viewer-loading" hidden>Loading document…</div>
-        <div class="fa-placeholder" id="fa-viewer-error" hidden>Failed to load this document.</div>
+        <div class="fa-placeholder" id="fa-viewer-error" hidden>
+          Failed to load this document.
+          <button type="button" class="fa-tbtn" id="fa-retry">Retry</button>
+        </div>
       </div>
     </section>
   </div>

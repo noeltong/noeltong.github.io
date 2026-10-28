@@ -12,7 +12,7 @@ nav_order: 5
     <a href="{{ '/filmarchive/' | relative_url }}">
       <div class="card h-100 hoverable">
         <div class="card-body">
-          <h2 class="card-title"><i class="ti ti-film"></i> Film Archive</h2>
+          <h2 class="card-title"><i class="ti ti-movie"></i> Film Archive</h2>
           <p class="card-text">
             A browsable library of official film datasheets, brochures, and chemistry documents, indexed by manufacturer, film type, and product, with a built-in PDF reader.
           </p>

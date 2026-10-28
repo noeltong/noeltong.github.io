@@ -12,3 +12,6 @@ github_repos:
   - FortAwesome/Font-Awesome
   - mathjax/MathJax
   - jpswalsh/academicons
+  - noeltong/TokenSummarizer
+  - noeltong/GPUObserver
+  - noeltong/writer-reviewer-academic-writing

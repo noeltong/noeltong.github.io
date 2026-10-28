@@ -102,7 +102,8 @@ function secondsModel(points, seconds) {
   return last.corrected;
 }
 
-// Returns the corrected exposure time in seconds, or null when the stock has no model.
+// Returns the corrected exposure time in seconds, or null when no correction can
+// be computed (no model, or beyond the officially stated range of a "none" model).
 function correct(stock, seconds) {
   const model = stock.model;
   if (!model) return null;
@@ -118,6 +119,10 @@ function correct(stock, seconds) {
   if (model.type === "seconds") {
     if (seconds <= 1) return seconds;
     return secondsModel(model.points, seconds);
+  }
+  if (model.type === "none") {
+    if (seconds <= model.upToSeconds) return seconds;
+    return null;
   }
   return null;
 }
@@ -160,8 +165,11 @@ function renderOptions() {
     for (const stock of FILM_STOCKS.filter((s) => s.maker === maker)) {
       const option = document.createElement("option");
       option.value = stock.id;
-      const hasModel = stock.model ? "" : " — no official data";
-      option.textContent = `${stock.name} · ISO ${stock.iso} · ${stock.category}${hasModel}`;
+      let suffix = "";
+      if (!stock.model) suffix = " — no official data";
+      else if (stock.model.type === "none") suffix = ` — none needed ≤ ${formatSeconds(stock.model.upToSeconds)}`;
+      else if (stock.official === false) suffix = " — community reference";
+      option.textContent = `${stock.name} · ISO ${stock.iso} · ${stock.category}${suffix}`;
       group.append(option);
     }
     frag.append(group);
@@ -175,20 +183,33 @@ function renderSource(stock) {
   const label = document.createElement("span");
   label.textContent = "Source: ";
   const link = document.createElement("a");
-  link.href =
-    "/assets/filmarchive/docs/" +
-    stock.source.pdf.split("/").map(encodeURIComponent).join("/");
   link.target = "_blank";
   link.rel = "noopener";
   link.textContent = stock.source.label;
   const reader = document.createElement("a");
-  reader.href = "/filmarchive/?doc=" + encodeURIComponent(stock.source.pdf);
-  reader.textContent = " (open in reader)";
+  if (stock.source.pdf) {
+    link.href =
+      "/assets/filmarchive/docs/" +
+      stock.source.pdf.split("/").map(encodeURIComponent).join("/");
+    reader.href = "/filmarchive/?doc=" + encodeURIComponent(stock.source.pdf);
+    reader.textContent = " (open in reader)";
+  } else {
+    link.href = stock.source.url;
+  }
   els.source.append(label, link, reader);
 }
 
 function renderTable(stock) {
   els.table.textContent = "";
+  if (stock.model && stock.model.type === "none") {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 3;
+    td.textContent = `Official statement: no correction or filter compensation needed up to ${formatSeconds(stock.model.upToSeconds)}. Nothing is published beyond that.`;
+    tr.append(td);
+    els.table.append(tr);
+    return;
+  }
   const rows = tableRows(stock);
   if (rows.length === 0) {
     const tr = document.createElement("tr");
@@ -217,13 +238,28 @@ function renderTable(stock) {
 }
 
 function renderWarning(stock) {
-  if (stock.model) {
-    els.noData.hidden = true;
-    els.noData.textContent = "";
+  const model = stock.model;
+  if (model && model.type === "none" && state.seconds > model.upToSeconds) {
+    els.noData.hidden = false;
+    els.noData.textContent =
+      `The official data for ${stock.maker} ${stock.name} covers only up to ${formatSeconds(model.upToSeconds)}. ` +
+      (stock.note || "Nothing is published beyond that range — test before relying on a result.");
     return;
   }
-  els.noData.hidden = false;
-  els.noData.textContent = `No official reciprocity data for ${stock.maker} ${stock.name}. ${stock.note}`;
+  if (stock.official === false && model) {
+    els.noData.hidden = false;
+    els.noData.textContent =
+      `Community reference values for ${stock.maker} ${stock.name} — not manufacturer-published data. ` +
+      (stock.note || "Verify by testing before critical use.");
+    return;
+  }
+  if (!model) {
+    els.noData.hidden = false;
+    els.noData.textContent = `No official reciprocity data for ${stock.maker} ${stock.name}. ${stock.note}`;
+    return;
+  }
+  els.noData.hidden = true;
+  els.noData.textContent = "";
 }
 
 function renderResult(stock, seconds) {
@@ -283,6 +319,12 @@ function renderResult(stock, seconds) {
   els.result.append(figures);
 
   const notes = [];
+  if (stock.official === false) {
+    notes.push("These are community reference values, not manufacturer-published corrections.");
+  }
+  if (stock.model.type === "none") {
+    notes.push(`Per the manufacturer, exposures up to ${formatSeconds(stock.model.upToSeconds)} need no compensation.`);
+  }
   if (stock.model.type === "power" && seconds <= 1) {
     notes.push("Ilford states that exposures of 1 second or less need no compensation.");
   }

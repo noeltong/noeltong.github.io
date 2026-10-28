@@ -11,7 +11,13 @@
 //   { type: "power", factor: P }
 //       Ilford / HARMAN formula: corrected = metered ^ P (valid above 1 s).
 //   { type: "seconds", points: [{ seconds, corrected }] }
-//       Foma tables that publish the multiplied exposure time rather than stops.
+//       Tables that publish the corrected exposure time directly (Adox, Rollei).
+//   { type: "none", upToSeconds: N }
+//       Official statement that no correction or filter compensation is needed up to
+//       N seconds, with nothing published beyond that range.
+//
+// A stock with official: false carries community reference values rather than
+// manufacturer-published data; the calculator labels it accordingly.
 
 export const FILM_STOCKS = [
   // ---------------------------------------------------------------- Ilford / HARMAN
@@ -277,8 +283,16 @@ export const FILM_STOCKS = [
     name: "Fomapan Cine 100",
     category: "Motion picture",
     iso: 100,
-    model: null,
-    note: "Foma publishes no Schwarzschild table for this stock; use the Fomapan 100 Classic table as a starting point and test.",
+    official: false,
+    model: {
+      type: "table",
+      points: [
+        { seconds: 1, stops: 1 },
+        { seconds: 10, stops: 3 },
+        { seconds: 100, stops: 4 },
+      ],
+    },
+    note: "Foma publishes no Schwarzschild table for the Cine stocks. Cine 100 is the Fomapan 100 Classic emulsion in cine perforation, so its published correction (+1 stop at 1 s, +3 at 10 s, +4 at 100 s) is the common community starting point. Test.",
     source: { label: "Fomapan Cine 100 brochure", pdf: "Foma/05 Motion Picture/Fomapan Cine 100/Fomapan-Cine-100_Brochure.pdf" },
   },
   {
@@ -305,7 +319,7 @@ export const FILM_STOCKS = [
     category: "B&W reversal",
     iso: 100,
     model: null,
-    note: "No reciprocity data in the Foma datasheet. Long exposures need testing; the R-100 reversal process has its own ±1 EV latitude.",
+    note: "Verified: no reciprocity data in the Foma datasheet (the archived brochure carries none). Long exposures need testing; the R-100 reversal process itself has its own ±1 EV latitude.",
     source: { label: "Fomapan R brochure", pdf: "Foma/04 B&W Reversal/Fomapan R100/Fomapan-R100_Brochure.pdf" },
   },
 
@@ -335,10 +349,10 @@ export const FILM_STOCKS = [
     name: "Provia 100F",
     category: "Color reversal",
     iso: 100,
-    model: null,
-    note: "No correction is required from 1/4000 s to 128 s — the generous limit of this emulsion.",
+    model: { type: "none", upToSeconds: 128 },
+    note: "Official datasheet statement: no correction or color balance compensation is required from 1/4000 s to 128 s.",
     maxSeconds: 128,
-    source: { label: "Fujichrome Provia 100F datasheet", pdf: "Fujifilm/02 Color Reversal/Provia 100F/films_provia-100f_datasheet_01.pdf" },
+    source: { label: "Fujichrome Provia 100F datasheet (AF3-036E)", pdf: "Fujifilm/02 Color Reversal/Provia 100F/films_provia-100f_datasheet_01.pdf" },
   },
   {
     id: "fuji-provia-400x",
@@ -346,10 +360,10 @@ export const FILM_STOCKS = [
     name: "Provia 400X",
     category: "Color reversal",
     iso: 400,
-    model: null,
-    note: "Fujifilm states corrections become necessary at shutter speeds of 2 minutes or longer, but publishes no table.",
+    model: { type: "none", upToSeconds: 120 },
+    note: "Official datasheet statement: corrections become necessary at shutter speeds of 2 minutes or longer, but Fujifilm publishes no table for that range.",
     maxSeconds: 120,
-    source: { label: "Fujichrome Provia 400X datasheet", pdf: "Fujifilm/02 Color Reversal/Provia 400X/provia_400x_datasheet.pdf" },
+    source: { label: "Fujichrome Provia 400X datasheet (AF3-0213E)", pdf: "Fujifilm/02 Color Reversal/Provia 400X/provia_400x_datasheet.pdf" },
   },
   {
     id: "fuji-astia-100f",
@@ -357,10 +371,10 @@ export const FILM_STOCKS = [
     name: "Astia 100F",
     category: "Color reversal",
     iso: 100,
-    model: null,
-    note: "No correction is required from 1/4000 s to 1 minute; Fujifilm publishes no table beyond that.",
+    model: { type: "none", upToSeconds: 60 },
+    note: "Official datasheet statement: no correction or color balance compensation is required from 1/4000 s to 1 minute; no table is published beyond that.",
     maxSeconds: 60,
-    source: { label: "Fujichrome Astia 100F datasheet", pdf: "Fujifilm/02 Color Reversal/Astia 100F/astia_100f_datasheet.pdf" },
+    source: { label: "Fujichrome Astia 100F datasheet (AF3-149E)", pdf: "Fujifilm/02 Color Reversal/Astia 100F/astia_100f_datasheet.pdf" },
   },
   {
     id: "fuji-velvia-100",
@@ -378,7 +392,7 @@ export const FILM_STOCKS = [
       ],
     },
     note: "Fujifilm gives a 2.5B filter and +1/3 to +1 stop from 2 to 16 minutes.",
-    source: { label: "Fujichrome Velvia 100 datasheet", pdf: "Fujifilm/02 Color Reversal/Velvia 100/velvia_100f_datasheet.pdf" },
+    source: { label: "Fujichrome Velvia 100 datasheet (AF3-202E)", pdf: "Fujifilm/02 Color Reversal/Velvia 100/films_velvia-100_datasheet_01.pdf" },
   },
   {
     id: "fuji-t64",
@@ -386,10 +400,10 @@ export const FILM_STOCKS = [
     name: "T64 (tungsten)",
     category: "Color reversal",
     iso: 64,
-    model: null,
-    note: "No correction from 1/125 s to 2 minutes; corrections apply beyond 4 minutes but Fujifilm publishes no numeric table.",
+    model: { type: "none", upToSeconds: 120 },
+    note: "Official datasheet statement: no correction or color balance compensation from 1/125 s to 2 minutes; corrections apply beyond 4 minutes but Fujifilm publishes no numeric table.",
     maxSeconds: 120,
-    source: { label: "Fujichrome T64 datasheet", pdf: "Fujifilm/02 Color Reversal/T64/t64_datasheet.pdf" },
+    source: { label: "Fujichrome T64 datasheet (AF3-178E)", pdf: "Fujifilm/02 Color Reversal/T64/t64_datasheet.pdf" },
   },
   {
     id: "fuji-c200",
@@ -486,9 +500,17 @@ export const FILM_STOCKS = [
     name: "Ektar 100",
     category: "Color negative",
     iso: 100,
-    model: null,
-    note: "Kodak's current Ektar 100 datasheet publishes no reciprocity table. Practical starting point used by many photographers: about +1/3 stop at 1 s, +1/2 to +2/3 stop at 10 s.",
-    source: { label: "Kodak Ektar 100 datasheet E-4046 (no reciprocity table)", pdf: "Kodak/01 Color Negative/Ektar 100/E4046_Ektar-100.pdf" },
+    official: false,
+    model: {
+      type: "table",
+      points: [
+        { seconds: 1, stops: 0.333 },
+        { seconds: 10, stops: 0.5 },
+        { seconds: 100, stops: 1 },
+      ],
+    },
+    note: "Kodak publishes no reciprocity table for Ektar 100 (its datasheet and the E-31 reciprocity publication do not cover it). Values are the commonly used community consensus: about +1/3 stop at 1 s, +1/2 at 10 s, +1 at 100 s, up to +2 stops at very long times. Bracket and test.",
+    source: { label: "Community consensus (Flickr Ektar 100 group, Photrio)", url: "https://www.flickr.com/groups/885232@N23/discuss/72157629716982710" },
   },
   {
     id: "kodak-portra-160",
@@ -496,9 +518,9 @@ export const FILM_STOCKS = [
     name: "Portra 160",
     category: "Color negative",
     iso: 160,
-    model: null,
-    note: "No reciprocity table in Kodak's current datasheet; community testing suggests roughly +1/3 stop at 1 s and +2/3 stop at 10 s.",
-    source: { label: "Kodak Portra 160 datasheet E-4051 (no reciprocity table)", pdf: "Kodak/01 Color Negative/Portra 160/E4051_Portra-160.pdf" },
+    model: { type: "none", upToSeconds: 10 },
+    note: "Kodak E-31 (2002) for the Portra 160NC/160VC family: no filter or exposure compensation from 1/10,000 s to 10 s; 100 s exposures are not recommended. The current Portra 160 datasheet publishes no reciprocity table; community tests report only small corrections past 10 s. Test beyond the official range.",
+    source: { label: "Kodak E-31 Reciprocity and Special Filter Data (2002)", pdf: "Kodak/09 Processing/Reciprocity E-31/E31_Reciprocity_2002.pdf" },
   },
   {
     id: "kodak-portra-400",
@@ -506,9 +528,9 @@ export const FILM_STOCKS = [
     name: "Portra 400",
     category: "Color negative",
     iso: 400,
-    model: null,
-    note: "No reciprocity table in Kodak's current datasheet; community testing suggests roughly +1/2 stop at 1 s and +1 stop at 10 s.",
-    source: { label: "Kodak Portra 400 datasheet E-4050 (no reciprocity table)", pdf: "Kodak/01 Color Negative/Portra 400/E4050_Portra-400.pdf" },
+    model: { type: "none", upToSeconds: 10 },
+    note: "Kodak E-31 (2002) for the Portra 400NC/VC/UC family: no filter or exposure compensation from 1/10,000 s to 10 s; 100 s exposures are not recommended. The current datasheet publishes no table, and community testing of the modern emulsion suggests a correction of roughly +1/2 stop already around 10 s (Isaac Sachs's Portra graph). Test.",
+    source: { label: "Kodak E-31 Reciprocity and Special Filter Data (2002)", pdf: "Kodak/09 Processing/Reciprocity E-31/E31_Reciprocity_2002.pdf" },
   },
   {
     id: "kodak-portra-800",
@@ -516,9 +538,9 @@ export const FILM_STOCKS = [
     name: "Portra 800",
     category: "Color negative",
     iso: 800,
-    model: null,
-    note: "No reciprocity table in Kodak's datasheet. Test before relying on a long exposure; +1 stop at 10 s is a common starting point.",
-    source: { label: "Kodak Portra 800 datasheet E-4040 (no reciprocity table)", pdf: "Kodak/01 Color Negative/Portra 800/E4040_Portra-800.pdf" },
+    model: { type: "none", upToSeconds: 1 },
+    note: "Kodak E-31 (2002) for Portra 800: no correction from 1/10,000 s to 1 s; 10 s and 100 s exposures are explicitly not recommended. If a long exposure is unavoidable, +1 stop at 10 s is the common community starting point. Test.",
+    source: { label: "Kodak E-31 Reciprocity and Special Filter Data (2002)", pdf: "Kodak/09 Processing/Reciprocity E-31/E31_Reciprocity_2002.pdf" },
   },
   {
     id: "kodak-gold-200",
@@ -526,9 +548,9 @@ export const FILM_STOCKS = [
     name: "Gold 200",
     category: "Color negative",
     iso: 200,
-    model: null,
-    note: "No reciprocity table in Kodak's datasheet; community testing suggests roughly +1/3 to +1/2 stop at 1 s.",
-    source: { label: "Kodak Gold 200 technical data (no reciprocity table)", pdf: "Kodak/01 Color Negative/Gold 200/E7022_Gold_200.pdf" },
+    model: { type: "none", upToSeconds: 10 },
+    note: "Kodak E-31 (2002) for the Gold 200 line (Bright Sun & Flash, GB): no filter or exposure compensation from 1/10,000 s to 10 s; 100 s exposures are not recommended. The current datasheet publishes no reciprocity table. Test beyond the official range.",
+    source: { label: "Kodak E-31 Reciprocity and Special Filter Data (2002)", pdf: "Kodak/09 Processing/Reciprocity E-31/E31_Reciprocity_2002.pdf" },
   },
   {
     id: "kodak-ultramax-400",
@@ -536,9 +558,9 @@ export const FILM_STOCKS = [
     name: "UltraMax 400",
     category: "Color negative",
     iso: 400,
-    model: null,
-    note: "No reciprocity table in Kodak's datasheet; community testing suggests roughly +1/2 stop at 1 s and +1 stop at 10 s.",
-    source: { label: "Kodak UltraMax 400 technical data (no reciprocity table)", pdf: "Kodak/01 Color Negative/Ultramax 400/E7023_max_400.pdf" },
+    model: { type: "none", upToSeconds: 1 },
+    note: "Kodak E-31 (2002) for MAX Versatility 400 (GC), the UltraMax 400 line: no correction from 1/10,000 s to 1 s; 10 s and 100 s exposures are explicitly not recommended. Test.",
+    source: { label: "Kodak E-31 Reciprocity and Special Filter Data (2002)", pdf: "Kodak/09 Processing/Reciprocity E-31/E31_Reciprocity_2002.pdf" },
   },
   {
     id: "kodak-ektachrome-e100",
@@ -546,8 +568,8 @@ export const FILM_STOCKS = [
     name: "Ektachrome E100",
     category: "Color reversal",
     iso: 100,
-    model: null,
-    note: "Kodak states no speed or color compensation is needed from 1/10,000 s to 10 s, and publishes no table beyond that.",
+    model: { type: "none", upToSeconds: 10 },
+    note: "Current E-4000 datasheet: no speed or color compensation needed from 1/10,000 s to 10 s, no table beyond. For reference, Kodak E-31 (2002) allowed the E100S/SW predecessors no correction up to 100 s (+1/3 stop and a CC075Y filter at 120 s), while E100VS/E200 were not recommended past 100 s.",
     maxSeconds: 10,
     source: { label: "Kodak Ektachrome E100 datasheet E-4000", pdf: "Kodak/02 Color Reversal/Ektachrome E100/e4000_ektachrome_100.pdf" },
   },
@@ -559,9 +581,17 @@ export const FILM_STOCKS = [
     name: "RPX 25",
     category: "B&W negative",
     iso: 25,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei RPX 25 datasheet", pdf: "Rollei/03 Black and White/RPX 25/RPX25_Data-Sheet_EN_R210701_e9f2ba.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 2, corrected: 3 },
+        { seconds: 10, corrected: 20 },
+        { seconds: 20, corrected: 50 },
+        { seconds: 50, corrected: 180 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table: no correction at 1/1000-1 s, then 2 s -> 3 s, 10 s -> 20 s, 20 s -> 50 s, 50 s -> 180 s.",
+    source: { label: "Rollei RPX 25 datasheet (R210701)", pdf: "Rollei/03 Black and White/RPX 25/RPX25_Data-Sheet_EN_R210701_e9f2ba.pdf" },
   },
   {
     id: "rollei-rpx-100",
@@ -569,9 +599,18 @@ export const FILM_STOCKS = [
     name: "RPX 100",
     category: "B&W negative",
     iso: 100,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei RPX 100 datasheet", pdf: "Rollei/03 Black and White/RPX 100/RPX100_Data-Sheet_EN_R210701_d15649.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 2, corrected: 3 },
+        { seconds: 5, corrected: 8 },
+        { seconds: 10, corrected: 25 },
+        { seconds: 20, corrected: 75 },
+        { seconds: 30, corrected: 150 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table: no correction at 1/1000-1 s, then 2 s -> 3 s, 5 s -> 8 s, 10 s -> 25 s, 20 s -> 75 s, 30 s -> 150 s.",
+    source: { label: "Rollei RPX 100 datasheet (R210701)", pdf: "Rollei/03 Black and White/RPX 100/RPX100_Data-Sheet_EN_R210701_d15649.pdf" },
   },
   {
     id: "rollei-rpx-400",
@@ -579,9 +618,18 @@ export const FILM_STOCKS = [
     name: "RPX 400",
     category: "B&W negative",
     iso: 400,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei RPX 400 datasheet", pdf: "Rollei/03 Black and White/RPX 400/RPX400_Data-Sheet_EN_R210701_d1748e.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 1, corrected: 2 },
+        { seconds: 5, corrected: 10 },
+        { seconds: 10, corrected: 30 },
+        { seconds: 15, corrected: 55 },
+        { seconds: 20, corrected: 80 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table: no correction at 1/1000-1/2 s, then 1 s -> 2 s, 5 s -> 10 s, 10 s -> 30 s, 15 s -> 55 s, 20 s -> 80 s.",
+    source: { label: "Rollei RPX 400 datasheet (R210701)", pdf: "Rollei/03 Black and White/RPX 400/RPX400_Data-Sheet_EN_R210701_d1748e.pdf" },
   },
   {
     id: "rollei-retro-80s",
@@ -589,9 +637,19 @@ export const FILM_STOCKS = [
     name: "Retro 80S",
     category: "B&W negative",
     iso: 80,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Retro 80S datasheet", pdf: "Rollei/03 Black and White/Retro 80S/Retro80S_Data-Sheet_EN_R210701_e5165b.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 1, corrected: 2 },
+        { seconds: 2, corrected: 3.5 },
+        { seconds: 4, corrected: 8 },
+        { seconds: 8, corrected: 24 },
+        { seconds: 15, corrected: 60 },
+        { seconds: 30, corrected: 180 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table (aerial emulsion, severe failure): 1 s -> 2 s, 2 s -> 3-4 s, 4 s -> 8 s, 8 s -> 24 s, 15 s -> 60 s, 30 s -> 180 s.",
+    source: { label: "Rollei Retro 80S datasheet (R210701)", pdf: "Rollei/03 Black and White/Retro 80S/Retro80S_Data-Sheet_EN_R210701_e5165b.pdf" },
   },
   {
     id: "rollei-retro-400s",
@@ -600,8 +658,8 @@ export const FILM_STOCKS = [
     category: "B&W negative",
     iso: 400,
     model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Retro 400S datasheet", pdf: "Rollei/03 Black and White/Retro 400S/Retro400S_Data-Sheet_EN_R210701_00e5fd.pdf" },
+    note: "Verified: the Rollei datasheet (EN and DE) publishes no Schwarzschild table for this stock. It is an Aviphot-derived aerial emulsion with severe low-intensity reciprocity failure, so test; community curves on Photrio are built from personal tests.",
+    source: { label: "Rollei Retro 400S datasheet (R210701)", pdf: "Rollei/03 Black and White/Retro 400S/Retro400S_Data-Sheet_EN_R210701_00e5fd.pdf" },
   },
   {
     id: "rollei-superpan-200",
@@ -609,9 +667,19 @@ export const FILM_STOCKS = [
     name: "Superpan 200",
     category: "B&W negative",
     iso: 200,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Superpan 200 datasheet", pdf: "Rollei/03 Black and White/Superpan 200/SUPERPAN200_Data-Sheet_EN_R210701_b83797.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 1, corrected: 2 },
+        { seconds: 2, corrected: 3.5 },
+        { seconds: 4, corrected: 8 },
+        { seconds: 8, corrected: 24 },
+        { seconds: 15, corrected: 60 },
+        { seconds: 30, corrected: 180 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table: 1 s -> 2 s, 2 s -> 3-4 s, 4 s -> 8 s, 8 s -> 24 s, 15 s -> 60 s, 30 s -> 180 s.",
+    source: { label: "Rollei Superpan 200 datasheet (R210701)", pdf: "Rollei/03 Black and White/Superpan 200/SUPERPAN200_Data-Sheet_EN_R210701_b83797.pdf" },
   },
   {
     id: "rollei-infrared-400",
@@ -620,8 +688,8 @@ export const FILM_STOCKS = [
     category: "B&W negative",
     iso: 400,
     model: null,
-    note: "No reciprocity data in the Rollei datasheet; infrared films generally need more compensation than panchromatic ones, so test.",
-    source: { label: "Rollei Infrared 400 datasheet", pdf: "Rollei/03 Black and White/Infrared 400/INFRARED_Data-Sheet_EN_R210701_6b0587.pdf" },
+    note: "Verified: no Schwarzschild table in any Rollei datasheet (EN or DE). An Aviphot-derived aerial emulsion with severe low-intensity reciprocity failure; infrared work adds its own filter factors. Community curves on Photrio come from personal tests — build your own.",
+    source: { label: "Rollei Infrared 400 datasheet (R210701)", pdf: "Rollei/03 Black and White/Infrared 400/INFRARED_Data-Sheet_EN_R210701_6b0587.pdf" },
   },
   {
     id: "rollei-ortho-25",
@@ -629,9 +697,19 @@ export const FILM_STOCKS = [
     name: "Ortho 25",
     category: "B&W negative",
     iso: 25,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Ortho 25 datasheet", pdf: "Rollei/03 Black and White/Ortho 25/Ortho25_Data-Sheet_EN_R210701_fce380.pdf" },
+    model: {
+      type: "seconds",
+      points: [
+        { seconds: 5, corrected: 7.5 },
+        { seconds: 10, corrected: 20 },
+        { seconds: 20, corrected: 50 },
+        { seconds: 30, corrected: 75 },
+        { seconds: 40, corrected: 100 },
+        { seconds: 50, corrected: 150 },
+      ],
+    },
+    note: "Official Rollei Schwarzschild table: no correction at 1/1000-1 s, then 5 s -> 7.5 s, 10 s -> 20 s, 20 s -> 50 s, 30 s -> 75 s, 40 s -> 100 s, 50 s -> 150 s.",
+    source: { label: "Rollei Ortho 25 datasheet (R210701)", pdf: "Rollei/03 Black and White/Ortho 25/Ortho25_Data-Sheet_EN_R210701_fce380.pdf" },
   },
   {
     id: "rollei-digibase-cn200",
@@ -639,9 +717,9 @@ export const FILM_STOCKS = [
     name: "Digibase CN200",
     category: "Color negative",
     iso: 200,
-    model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Digibase CN200 datasheet", pdf: "Rollei/01 Color Negative/Digibase CN200/RCD_Datenblatt_EN_20ee7b.pdf" },
+    model: { type: "none", upToSeconds: 1 },
+    note: "Official MACO datasheet (RDB2001): no correction required from 1/10,000 s to 1 s; no correction table is published beyond that for this aerial-derived emulsion. Test longer exposures.",
+    source: { label: "MACO DIGIBASE CN 200 datasheet (RDB2001)", pdf: "Rollei/01 Color Negative/Digibase CN200/RDB2001_Datenblatt_DE.pdf" },
   },
   {
     id: "rollei-digibase-cr200",
@@ -650,7 +728,7 @@ export const FILM_STOCKS = [
     category: "Color reversal",
     iso: 200,
     model: null,
-    note: "No reciprocity data in the Rollei datasheet.",
-    source: { label: "Rollei Digibase CR200 datasheet", pdf: "Rollei/02 Color Reversal/Digibase CR200/RCS_Data_Sheet_EN_599d68.pdf" },
+    note: "No reciprocity data published: the current MACO/Rollei datasheet for CR200 could not be located (the official Rollei download link hosts a mis-filed chemistry sheet), and no correction table exists in MACO literature for this Aviphot Chrome-derived emulsion. Test.",
+    source: { label: "Rollei Analog / MACO — no published reciprocity data", url: "https://www.rolleianalog.com/" },
   },
 ];

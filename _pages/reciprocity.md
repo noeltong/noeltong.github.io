@@ -219,7 +219,7 @@ _styles: |
     </div>
     <div class="rc-field rc-check">
       <input id="rc-push" type="checkbox" />
-      <label for="rc-push">Include &#189;-stop rounding</label>
+      <label for="rc-push">Include 1/3-stop rounding</label>
     </div>
   </div>
 

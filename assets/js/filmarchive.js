@@ -1,4 +1,4 @@
-// Film Archive: hierarchical document index (manufacturer -> category -> product -> document)
+// Film Archive: hierarchical document index (group -> manufacturer -> category -> product -> document)
 // with an embedded pdf.js reader. Catalog: assets/filmarchive/catalog.json, documents:
 // assets/filmarchive/docs/, pdf.js: assets/pdfjs/.
 // The reader mirrors the proven pdf.js integration of the FilmArchive desktop app
@@ -21,6 +21,7 @@ const els = {
   placeholder: document.getElementById("fa-placeholder"),
   loading: document.getElementById("fa-viewer-loading"),
   error: document.getElementById("fa-viewer-error"),
+  retry: document.getElementById("fa-retry"),
   prev: document.getElementById("fa-prev"),
   next: document.getElementById("fa-next"),
   page: document.getElementById("fa-page"),
@@ -42,9 +43,17 @@ const state = {
   seq: 0,
   doc: null,
   selectedBtn: null,
+  pendingDoc: null,
   docsBase: "",
   pdfjsBase: "",
 };
+
+// Top-level sections of the index. Every category in the catalog carries a
+// "group" field ("films" or "papers-chemistry") that selects its section.
+const GROUPS = [
+  { key: "films", name: "Films" },
+  { key: "papers-chemistry", name: "Papers & Chemistry" },
+];
 
 // Minimal English l10n shim required by the pdf.js viewer component.
 const l10n = {
@@ -93,58 +102,91 @@ async function fetchCatalog(catalogUrl) {
   return res.json();
 }
 
+function docButton(doc) {
+  const btn = el("button", "fa-doc", doc.title || doc.path.split("/").pop());
+  btn.type = "button";
+  btn.title = (doc.title || doc.path) + (doc.type ? " · " + doc.type : "");
+  btn.dataset.path = doc.path;
+  btn.addEventListener("click", () => selectDocument(doc));
+  return btn;
+}
+
 function buildIndex(catalog) {
   els.index.textContent = "";
   const frag = document.createDocumentFragment();
-  let firstMfr = true;
-
+  const groupOf = new Map();
   for (const mfr of catalog.manufacturers) {
-    const docsOfMfr = catalog.documents.filter((d) => d.manufacturer === mfr.name);
-    if (docsOfMfr.length === 0) continue;
-
-    const mfrDetails = el("details", "fa-mfr");
-    mfrDetails.open = firstMfr;
-    firstMfr = false;
-    const mfrSummary = el("summary", "fa-summary");
-    mfrSummary.append(el("span", "fa-name", mfr.name), el("span", "fa-count", String(docsOfMfr.length)));
-    const mfrBody = el("div", "fa-body");
-
     for (const cat of mfr.categories || []) {
-      const docsOfCat = docsOfMfr.filter((d) => d.categoryDir === cat.dir);
-      if (docsOfCat.length === 0) continue;
-
-      const catDetails = el("details", "fa-cat");
-      const catSummary = el("summary", "fa-summary");
-      const dot = el("span", "fa-dot");
-      dot.style.setProperty("--fa-dot", cat.color || "var(--global-theme-color)");
-      catSummary.append(dot, el("span", "fa-name", cat.name), el("span", "fa-count", String(docsOfCat.length)));
-      const catBody = el("div", "fa-body");
-
-      const products = [...new Set(docsOfCat.map((d) => d.product))].sort((a, b) => a.localeCompare(b));
-      for (const product of products) {
-        const docs = docsOfCat.filter((d) => d.product === product);
-        catBody.append(el("div", "fa-product-name", product));
-        const list = el("ul", "fa-docs");
-        for (const doc of docs) {
-          const item = el("li");
-          const btn = el("button", "fa-doc", doc.title || doc.path.split("/").pop());
-          btn.type = "button";
-          btn.title = (doc.title || doc.path) + (doc.type ? " · " + doc.type : "");
-          btn.dataset.path = doc.path;
-          btn.addEventListener("click", () => selectDocument(doc));
-          item.append(btn);
-          list.append(item);
-        }
-        catBody.append(list);
-      }
-      catDetails.append(catSummary, catBody);
-      mfrBody.append(catDetails);
+      groupOf.set(mfr.name + "/" + cat.dir, cat.group === "papers-chemistry" ? "papers-chemistry" : "films");
     }
-    mfrDetails.append(mfrSummary, mfrBody);
-    frag.append(mfrDetails);
   }
 
-  if (!frag.hasChildNodes()) {
+  let anyGroup = false;
+  for (const group of GROUPS) {
+    const groupBody = el("div", "fa-body");
+    let groupCount = 0;
+    let firstMfr = true;
+
+    for (const mfr of catalog.manufacturers) {
+      const docsOfMfr = catalog.documents.filter(
+        (d) => !d.hidden && d.manufacturer === mfr.name && groupOf.get(mfr.name + "/" + d.categoryDir) === group.key
+      );
+      if (docsOfMfr.length === 0) continue;
+      groupCount += docsOfMfr.length;
+
+      const mfrDetails = el("details", "fa-mfr");
+      mfrDetails.open = firstMfr;
+      firstMfr = false;
+      const mfrSummary = el("summary", "fa-summary");
+      mfrSummary.append(el("span", "fa-name", mfr.name), el("span", "fa-count", String(docsOfMfr.length)));
+      const mfrBody = el("div", "fa-body");
+
+      for (const cat of mfr.categories || []) {
+        const docsOfCat = docsOfMfr.filter((d) => d.categoryDir === cat.dir);
+        if (docsOfCat.length === 0) continue;
+
+        const catDetails = el("details", "fa-cat");
+        const catSummary = el("summary", "fa-summary");
+        catSummary.append(el("span", "fa-name", cat.name), el("span", "fa-count", String(docsOfCat.length)));
+        const catBody = el("div", "fa-body");
+
+        const products = [...new Set(docsOfCat.map((d) => d.product))].sort((a, b) => a.localeCompare(b));
+        for (const product of products) {
+          const docs = docsOfCat.filter((d) => d.product === product);
+          if (docs.length === 1) {
+            const btn = docButton(docs[0]);
+            btn.classList.add("fa-product-doc");
+            btn.textContent = product;
+            catBody.append(btn);
+          } else {
+            catBody.append(el("div", "fa-product-name", product));
+            const list = el("ul", "fa-docs");
+            for (const doc of docs) {
+              const item = el("li");
+              item.append(docButton(doc));
+              list.append(item);
+            }
+            catBody.append(list);
+          }
+        }
+        catDetails.append(catSummary, catBody);
+        mfrBody.append(catDetails);
+      }
+      mfrDetails.append(mfrSummary, mfrBody);
+      groupBody.append(mfrDetails);
+    }
+
+    if (groupCount === 0) continue;
+    anyGroup = true;
+    const groupWrap = el("details", "fa-group");
+    groupWrap.open = group.key === "films";
+    const groupSummary = el("summary", "fa-summary fa-group-summary");
+    groupSummary.append(el("span", "fa-name", group.name), el("span", "fa-count", String(groupCount)));
+    groupWrap.append(groupSummary, groupBody);
+    frag.append(groupWrap);
+  }
+
+  if (!anyGroup) {
     renderIndexError("No documents found in the catalog.");
     return;
   }
@@ -228,13 +270,20 @@ function wireToolbar() {
   els.open.addEventListener("click", () => {
     if (state.doc) window.open(docUrl(state.doc), "_blank", "noopener");
   });
+  els.retry.addEventListener("click", () => {
+    if (state.doc && state.pdfjs) loadDocument(state.doc);
+  });
 }
 
 async function loadDocument(doc) {
   if (!state.pdfjs) {
-    showViewerState("error");
+    // The reader modules are still loading; remember the selection and open it
+    // as soon as setupReader() finishes instead of failing the click.
+    state.pendingDoc = doc;
+    showViewerState("loading");
     return;
   }
+  state.pendingDoc = null;
   const seq = ++state.seq;
   showViewerState("loading");
   if (state.loadingTask) {
@@ -257,10 +306,10 @@ async function loadDocument(doc) {
     state.loadingTask = task;
     const pdf = await task.promise;
     if (seq !== state.seq) {
-      pdf.destroy();
+      // Superseded while loading; releasing the task tears down its document.
+      task.destroy();
       return;
     }
-    if (state.pdf) state.pdf.destroy();
     state.pdf = pdf;
     state.viewer.setDocument(pdf);
     state.linkService.setDocument(pdf, null);
@@ -311,14 +360,26 @@ async function init() {
 
   buildIndex(catalog);
 
+  let readerReady = false;
   try {
     await setupReader();
+    readerReady = true;
   } catch (err) {
     showViewerState("error");
     console.error(err);
   }
 
   wireToolbar();
+
+  const pending = state.pendingDoc;
+  if (pending) {
+    // The user picked a document while the reader was still loading; the
+    // selection UI (meta panel, URL, highlight) is already up to date.
+    state.pendingDoc = null;
+    if (readerReady) loadDocument(pending);
+    return;
+  }
+  if (!readerReady) return;
 
   const wanted = new URLSearchParams(window.location.search).get("doc");
   const doc = catalog.documents.find((d) => d.path === wanted);
